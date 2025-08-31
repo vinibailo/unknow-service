@@ -9,6 +9,7 @@ export interface Tool {
   description: string;
   icon: LucideIcon;
   category: CategoryName;
+  premium?: boolean;
 }
 
 export const tools: Tool[] = [
@@ -38,14 +39,16 @@ export const tools: Tool[] = [
     title: "Video Convert",
     description: "Convert videos",
     icon: Video,
-    category: "Video"
+    category: "Video",
+    premium: true
   },
   {
     id: "ai-summarize",
     title: "AI Summarize",
     description: "Summarize text",
     icon: PenLine,
-    category: "AI Write"
+    category: "AI Write",
+    premium: true
   },
   {
     id: "file-unzip",
