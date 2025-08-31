@@ -1,0 +1,15 @@
+{
+  "name": "unknow-service",
+  "private": true,
+  "version": "0.1.0",
+  "description": "Utilify monorepo",
+  "scripts": {
+    "dev": "pnpm --filter web dev",
+    "build": "pnpm --filter web build",
+    "start": "pnpm --filter web start",
+    "worker": "pnpm --filter worker start"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}
