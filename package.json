@@ -11,5 +11,8 @@
   },
   "engines": {
     "node": ">=20"
+  },
+  "devDependencies": {
+    "prisma": "^5.15.0"
   }
 }

@@ -1,0 +1,21 @@
+// Prisma schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model Job {
+  id           String   @id @default(cuid())
+  tool         String
+  params       Json
+  progress     Int      @default(0)
+  status       String   @default("PENDING")
+  outputFileId String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}

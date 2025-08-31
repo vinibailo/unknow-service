@@ -1,0 +1,5 @@
+node_modules
+apps/web/.next
+apps/web/dist
+apps/worker/dist
+.next
