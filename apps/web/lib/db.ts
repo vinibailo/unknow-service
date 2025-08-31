@@ -1,11 +1,9 @@
-export type Plan = "FREE" | "SUPPORTER";
+import { PrismaClient } from "@prisma/client";
 
-export interface UserRecord {
-  plan: Plan;
-  usage: number;
-  stripeCustomerId?: string;
-  subscriptionStatus?: string;
-}
+const globalForPrisma = globalThis as unknown as { prisma?: PrismaClient };
 
-// simple in-memory store for demo purposes
-export const users = new Map<string, UserRecord>();
+export const prisma =
+  globalForPrisma.prisma ??
+  new PrismaClient();
+
+if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
