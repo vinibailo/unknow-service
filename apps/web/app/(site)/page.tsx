@@ -4,9 +4,13 @@ import { useState } from "react";
 import { Input } from "@/components/ui/input";
 import { CategoryTabs } from "@/components/CategoryTabs";
 import { ToolCard } from "@/components/ToolCard";
-import { tools, type CategoryName } from "@/constants/tools";
+import { tools, type CategoryName, type Tool } from "@/constants/tools";
 
-const categories: CategoryName[] = ["PDF", "Image", "Video", "AI Write", "File"];
+const categories: CategoryName[] = ["PDF", "Image", "Video", "AI Write"];
+const featuredIds = ["pdf-merge", "img-bg-remove", "video-compress", "paragraph-rewriter"];
+const featured = featuredIds
+  .map((id) => tools.find((t) => t.id === id))
+  .filter((t): t is Tool => Boolean(t));
 
 export default function HomePage() {
   const [query, setQuery] = useState("");
@@ -34,10 +38,30 @@ export default function HomePage() {
           />
         </div>
       </section>
+      <section className="space-y-4">
+        <h2 className="text-center text-2xl font-semibold">Featured Tools</h2>
+        <div className="grid grid-cols-2 gap-6 sm:grid-cols-4">
+          {featured.map((tool) => (
+            <ToolCard
+              key={tool.id}
+              id={tool.id}
+              icon={tool.icon}
+              title={tool.title}
+              description={tool.description}
+            />
+          ))}
+        </div>
+      </section>
       <CategoryTabs categories={categoryData} active={active} onChange={(c) => setActive(c as CategoryName)} />
       <div className="grid grid-cols-2 gap-6 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5">
         {filtered.map((tool) => (
-          <ToolCard key={tool.id} icon={tool.icon} title={tool.title} description={tool.description} />
+          <ToolCard
+            key={tool.id}
+            id={tool.id}
+            icon={tool.icon}
+            title={tool.title}
+            description={tool.description}
+          />
         ))}
       </div>
     </div>
