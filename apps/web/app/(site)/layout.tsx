@@ -5,7 +5,7 @@ import { useState, type ReactNode } from "react";
 import { Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { UpgradeStrip } from "@/components/UpgradeStrip";
+import { AdPlaceholder } from "@/components/AdPlaceholder";
 
 export default function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -35,8 +35,10 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
           </div>
         )}
       </header>
-      <UpgradeStrip />
-      <main>{children}</main>
+      <main>
+        <AdPlaceholder />
+        {children}
+      </main>
     </div>
   );
 }

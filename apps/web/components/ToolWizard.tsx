@@ -5,17 +5,24 @@ import { useDropzone } from 'react-dropzone';
 import { z, ZodObject } from 'zod';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { Captcha } from './Captcha';
 
 interface ToolWizardProps<T extends ZodObject<any>> {
   schema: T;
-  onRun: (file: File, values: z.infer<T>) => Promise<{ downloadUrl: string }>;
+  onRun: (
+    file: File,
+    values: z.infer<T>,
+    captchaToken?: string,
+  ) => Promise<{ downloadUrl: string }>;
+  requireCaptcha?: boolean;
 }
 
-export function ToolWizard<T extends ZodObject<any>>({ schema, onRun }: ToolWizardProps<T>) {
+export function ToolWizard<T extends ZodObject<any>>({ schema, onRun, requireCaptcha }: ToolWizardProps<T>) {
   const [step, setStep] = useState(1);
   const [file, setFile] = useState<File | null>(null);
   const [values, setValues] = useState<Record<string, any>>({});
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
+  const [captchaToken, setCaptchaToken] = useState<string | null>(null);
 
   const onDrop = useCallback((accepted: File[]) => {
     setFile(accepted[0]);
@@ -30,8 +37,9 @@ export function ToolWizard<T extends ZodObject<any>>({ schema, onRun }: ToolWiza
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!file) return;
+    if (requireCaptcha && !captchaToken) return;
     const parsed = schema.parse(values);
-    const result = await onRun(file, parsed);
+    const result = await onRun(file, parsed, captchaToken || undefined);
     setDownloadUrl(result.downloadUrl);
     setStep(3);
   };
@@ -77,8 +85,9 @@ export function ToolWizard<T extends ZodObject<any>>({ schema, onRun }: ToolWiza
       )}
 
       {step === 2 && (
-        <form onSubmit={handleSubmit} className="max-w-md mx-auto">
+        <form onSubmit={handleSubmit} className="max-w-md mx-auto space-y-4">
           {fields}
+          {requireCaptcha && <Captcha onVerify={setCaptchaToken} />}
           <Button type="submit" className="w-full">
             Run
           </Button>
