@@ -6,7 +6,7 @@ import { CategoryTabs } from "@/components/CategoryTabs";
 import { ToolCard } from "@/components/ToolCard";
 import { tools, type CategoryName } from "@/constants/tools";
 
-const categories: CategoryName[] = ["PDF", "Image", "Video", "AI Write", "File"];
+const categories: CategoryName[] = ["PDF", "Image", "Video", "AI Write"];
 
 export default function ToolsPage() {
   const [query, setQuery] = useState("");
@@ -40,6 +40,7 @@ export default function ToolsPage() {
         {filtered.map((tool) => (
           <ToolCard
             key={tool.id}
+            id={tool.id}
             icon={tool.icon}
             title={tool.title}
             description={tool.description}
