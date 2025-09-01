@@ -6,7 +6,13 @@ import { CategoryTabs } from "@/components/CategoryTabs";
 import { ToolCard } from "@/components/ToolCard";
 import { tools, type CategoryName, type Tool } from "@/constants/tools";
 
-const categories: CategoryName[] = ["PDF", "Image", "Video", "AI Write"];
+const categories: CategoryName[] = [
+  "PDF",
+  "Image",
+  "Video",
+  "File Conversion",
+  "AI Write",
+];
 const featuredIds = ["pdf-merge", "img-bg-remove", "video-compress", "paragraph-rewriter"];
 const featured = featuredIds
   .map((id) => tools.find((t) => t.id === id))
