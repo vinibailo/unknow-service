@@ -6,6 +6,7 @@ import { Menu } from "lucide-react";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { AdPlaceholder } from "@/components/AdPlaceholder";
+import { Footer } from "@/components/Footer";
 
 export default function SiteLayout({ children }: { children: ReactNode }) {
   const [open, setOpen] = useState(false);
@@ -39,6 +40,7 @@ export default function SiteLayout({ children }: { children: ReactNode }) {
         <AdPlaceholder />
         {children}
       </main>
+      <Footer />
     </div>
   );
 }

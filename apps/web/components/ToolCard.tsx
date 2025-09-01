@@ -1,3 +1,5 @@
+"use client";
+
 import Link from "next/link";
 import { type LucideIcon } from "lucide-react";
 import { PremiumBadge } from "./PremiumBadge";
@@ -14,6 +16,7 @@ export function ToolCard({ id, icon: Icon, title, description, premium }: ToolCa
   return (
     <Link
       href={`/tools/${id}`}
+      prefetch={false}
       className="block rounded-lg border border-border bg-surface p-4 shadow-sm transition-shadow hover:shadow-md"
     >
       <div className="mb-2 flex items-center">
