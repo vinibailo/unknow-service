@@ -17,6 +17,14 @@ export interface Tool {
   premium?: boolean;
 }
 
+export const categorySlugs: Record<CategoryName, string> = {
+  PDF: "pdf",
+  Image: "image",
+  Video: "video",
+  "File Conversion": "file_conversion",
+  "AI Write": "write",
+};
+
 export const tools: Tool[] = [
   {
     id: "pdf-merge",

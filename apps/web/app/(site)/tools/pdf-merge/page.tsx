@@ -1,9 +1,8 @@
-import { ToolWizard } from "@/components/ToolWizard";
-import { runTool } from "@/lib/runTool";
+import { ToolPage } from "@/components/ToolPage";
 import { z } from "zod";
 
 const schema = z.object({});
 
 export default function Page() {
-  return <ToolWizard schema={schema} onRun={(file, values) => runTool("pdf-merge", file, values)} />;
+  return <ToolPage toolId="pdf-merge" schema={schema} />;
 }

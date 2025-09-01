@@ -2,6 +2,7 @@
 
 import { useCallback, useState } from "react";
 import { useDropzone } from "react-dropzone";
+import { useToast } from "./ToastProvider";
 
 interface DropzoneProps {
   onUpload: (file: File, onProgress: (p: number) => void) => Promise<void>;
@@ -9,12 +10,19 @@ interface DropzoneProps {
 
 export function Dropzone({ onUpload }: DropzoneProps) {
   const [progress, setProgress] = useState(0);
+  const toast = useToast();
 
   const handleFile = useCallback(
-    (file: File) => {
-      void onUpload(file, setProgress);
+    async (file: File) => {
+      toast("Upload started");
+      try {
+        await onUpload(file, setProgress);
+        toast("Upload complete", "success");
+      } catch {
+        toast("Upload error", "error");
+      }
     },
-    [onUpload]
+    [onUpload, toast]
   );
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -34,7 +42,7 @@ export function Dropzone({ onUpload }: DropzoneProps) {
       {...getRootProps()}
       onPaste={onPaste}
       className={`flex flex-col items-center justify-center rounded-md border-2 border-dashed p-8 text-center cursor-pointer ${
-        isDragActive ? "bg-muted" : ""
+        isDragActive ? "bg-muted border-primary" : ""
       }`}
     >
       <input {...getInputProps()} />

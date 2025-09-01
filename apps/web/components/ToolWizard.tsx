@@ -6,8 +6,12 @@ import { z, ZodObject } from 'zod';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
 import { Captcha } from './Captcha';
+import { useToast } from './ToastProvider';
+import { tools } from '@/constants/tools';
+import { ToolCard } from './ToolCard';
 
 interface ToolWizardProps<T extends ZodObject<any>> {
+  toolId: string;
   schema: T;
   onRun: (
     file: File,
@@ -17,18 +21,25 @@ interface ToolWizardProps<T extends ZodObject<any>> {
   requireCaptcha?: boolean;
 }
 
-export function ToolWizard<T extends ZodObject<any>>({ schema, onRun, requireCaptcha }: ToolWizardProps<T>) {
+export function ToolWizard<T extends ZodObject<any>>({ toolId, schema, onRun, requireCaptcha }: ToolWizardProps<T>) {
   const [step, setStep] = useState(1);
   const [file, setFile] = useState<File | null>(null);
   const [values, setValues] = useState<Record<string, any>>({});
   const [downloadUrl, setDownloadUrl] = useState<string | null>(null);
   const [captchaToken, setCaptchaToken] = useState<string | null>(null);
+  const toast = useToast();
+  const tool = tools.find((t) => t.id === toolId)!;
 
   const onDrop = useCallback((accepted: File[]) => {
     setFile(accepted[0]);
   }, []);
 
   const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop });
+
+  const onPaste = (e: React.ClipboardEvent) => {
+    const pasted = e.clipboardData.files[0];
+    if (pasted) setFile(pasted);
+  };
 
   const handleChange = (key: string, value: string) => {
     setValues((prev) => ({ ...prev, [key]: value }));
@@ -39,9 +50,15 @@ export function ToolWizard<T extends ZodObject<any>>({ schema, onRun, requireCap
     if (!file) return;
     if (requireCaptcha && !captchaToken) return;
     const parsed = schema.parse(values);
-    const result = await onRun(file, parsed, captchaToken || undefined);
-    setDownloadUrl(result.downloadUrl);
-    setStep(3);
+    toast('Job enqueued');
+    try {
+      const result = await onRun(file, parsed, captchaToken || undefined);
+      setDownloadUrl(result.downloadUrl);
+      toast('Job complete', 'success');
+      setStep(3);
+    } catch (err) {
+      toast('Error running tool', 'error');
+    }
   };
 
   const reset = () => {
@@ -66,7 +83,11 @@ export function ToolWizard<T extends ZodObject<any>>({ schema, onRun, requireCap
       {step === 1 && (
         <div
           {...getRootProps()}
-          className="border-2 border-dashed rounded p-10 text-center cursor-pointer"
+          onPaste={onPaste}
+          tabIndex={0}
+          className={`border-2 border-dashed rounded p-10 text-center cursor-pointer ${
+            isDragActive ? 'bg-muted border-primary' : ''
+          }`}
         >
           <input {...getInputProps()} />
           {file ? (
@@ -74,7 +95,7 @@ export function ToolWizard<T extends ZodObject<any>>({ schema, onRun, requireCap
               {file.name} - {Math.round(file.size / 1024)} KB
             </p>
           ) : (
-            <p>{isDragActive ? 'Drop the file here' : 'Drag and drop or click to upload'}</p>
+            <p>{isDragActive ? 'Drop the file here' : 'Drag and drop, click, or paste to upload'}</p>
           )}
           {file && (
             <Button className="mt-4" onClick={() => setStep(2)}>
@@ -107,9 +128,22 @@ export function ToolWizard<T extends ZodObject<any>>({ schema, onRun, requireCap
               Files are retained for a limited time.
             </p>
             <Button variant="ghost" onClick={reset} className="mt-2">
-              Run another job
+              Run again
             </Button>
           </div>
+          {tools.filter((t) => t.category === tool.category && t.id !== toolId).slice(0,3).length > 0 && (
+            <div className="mt-6">
+              <p className="mb-2 text-sm font-medium">Try related tools</p>
+              <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
+                {tools
+                  .filter((t) => t.category === tool.category && t.id !== toolId)
+                  .slice(0, 3)
+                  .map((r) => (
+                    <ToolCard key={r.id} {...r} />
+                  ))}
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>

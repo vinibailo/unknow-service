@@ -1,9 +1,8 @@
-import { ToolWizard } from "@/components/ToolWizard";
-import { runTool } from "@/lib/runTool";
+import { ToolPage } from "@/components/ToolPage";
 import { z } from "zod";
 
 const schema = z.object({ quality: z.string().optional() });
 
 export default function Page() {
-  return <ToolWizard schema={schema} onRun={(file, values) => runTool("img-compress", file, values)} />;
+  return <ToolPage toolId="img-compress" schema={schema} />;
 }

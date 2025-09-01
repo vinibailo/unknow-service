@@ -1,5 +1,6 @@
-import { ToolWizard } from "@/components/ToolWizard";
-import { runTool } from "@/lib/runTool";
+"use client";
+
+import { ToolPage } from "@/components/ToolPage";
 import { z } from "zod";
 import { useSession } from "next-auth/react";
 
@@ -7,13 +8,5 @@ const schema = z.object({});
 
 export default function Page() {
   const { data: session } = useSession();
-  return (
-    <ToolWizard
-      schema={schema}
-      requireCaptcha={!session}
-      onRun={(file, values, token) =>
-        runTool("img-bg-remove", file, { ...values, captchaToken: token })
-      }
-    />
-  );
+  return <ToolPage toolId="img-bg-remove" schema={schema} requireCaptcha={!session} />;
 }
