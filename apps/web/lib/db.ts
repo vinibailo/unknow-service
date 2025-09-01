@@ -7,3 +7,13 @@ export const prisma =
   new PrismaClient();
 
 if (process.env.NODE_ENV !== "production") globalForPrisma.prisma = prisma;
+
+export type Plan = "FREE" | "PRO";
+
+export interface UserRecord {
+  plan: Plan;
+  usage: number;
+  stripeCustomerId?: string;
+}
+
+export const users = new Map<string, UserRecord>();
